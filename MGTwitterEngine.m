@@ -146,7 +146,7 @@
 - (MGTwitterEngine *)initWithDelegate:(NSObject *)newDelegate
 {
     if ((self = [super init])) {
-        _delegate = newDelegate; // deliberately weak reference
+        _delegate = (NSObject <MGTwitterEngineDelegate> *)newDelegate; // deliberately weak reference
         _connections = [[NSMutableDictionary alloc] initWithCapacity:0];
         _clientName = [DEFAULT_CLIENT_NAME retain];
         _clientVersion = [DEFAULT_CLIENT_VERSION retain];
@@ -865,7 +865,7 @@
 								  responseType:responseType];
 		case MGTwitterOAuthToken:;
 			OAToken *token = [[[OAToken alloc] initWithHTTPResponseBody:[[[NSString alloc] initWithData:xmlData encoding:NSUTF8StringEncoding] autorelease]] autorelease];
-			[self parsingSucceededForRequest:identifier ofResponseType:requestType
+			[self parsingSucceededForRequest:identifier ofResponseType:responseType
 						   withParsedObjects:[NSArray arrayWithObject:token]];
         default:
             break;
@@ -2135,9 +2135,9 @@
 	[request setHTTPMethod:@"POST"];
 	
 	[request setParameters:[NSArray arrayWithObjects:
-							[OARequestParameter requestParameter:@"x_auth_mode" value:@"client_auth"],
-							[OARequestParameter requestParameter:@"x_auth_username" value:username],
-							[OARequestParameter requestParameter:@"x_auth_password" value:password],
+							[OARequestParameter requestParameterWithName:@"x_auth_mode" value:@"client_auth"],
+							[OARequestParameter requestParameterWithName:@"x_auth_username" value:username],
+							[OARequestParameter requestParameterWithName:@"x_auth_password" value:password],
 							nil]];		
 	
     // Create a connection using this request, with the default timeout and caching policy, 
